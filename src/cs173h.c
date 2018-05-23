@@ -31,9 +31,13 @@ int cs173h_init(const char *dir, const char *label) {
 	// Initialize variables.
 	cs173h_configuration = calloc(1, sizeof(cs173h_configuration_t));
 	cs173h_velocity_model = calloc(1, sizeof(cs173h_model_t));
+        cs173h_vs30_map = calloc(1, sizeof(cs173h_vs30_map_config_t));
 
 	// Configuration file location.
 	sprintf(configbuf, "%s/model/%s/data/config", dir, label);
+
+        // Set up model directories.
+        sprintf(cs173h_vs30_etree_file, "%s/model/ucvm/ucvm.e", dir);
 
 	// Read the cs173h_configuration file.
 	if (cs173h_read_configuration(configbuf, cs173h_configuration) != SUCCESS)
@@ -53,6 +57,11 @@ int cs173h_init(const char *dir, const char *label) {
 		return FAIL;
 	}
 
+        if (cs173h_read_vs30_map(cs173h_vs30_etree_file, cca_vs30_map) != SUCCESS) {
+                cs173h_print_error("Could not read the Vs30 map data from UCVM.");
+                return FAIL;
+        }
+
 	// We need to convert the point from lat, lon to UTM, let's set it up.
 	if (!(cs173h_latlon = pj_init_plus("+proj=latlong +datum=WGS84"))) {
 		cs173h_print_error("Could not set up latitude and longitude projection.");
@@ -62,6 +71,11 @@ int cs173h_init(const char *dir, const char *label) {
 		cs173h_print_error("Could not set up UTM projection.");
 		return FAIL;
 	}
+
+        if (!(cs173h_aeqd = pj_init_plus(cs173h_vs30_map->projection))) {
+                cs173h_print_error("Could not set up AEQD projection.");
+                return FAIL;
+        }
 
 	// In order to simplify our calculations in the query, we want to rotate the box so that the bottom-left
 	// corner is at (0m,0m). Our box's height is total_height_m and total_width_m. We then rotate the
@@ -82,6 +96,10 @@ int cs173h_init(const char *dir, const char *label) {
 						  pow(cs173h_configuration->top_left_corner_e - cs173h_configuration->bottom_left_corner_e, 2.0f));
 	cs173h_total_width_m  = sqrt(pow(cs173h_configuration->top_right_corner_n - cs173h_configuration->top_left_corner_n, 2.0f) +
 						  pow(cs173h_configuration->top_right_corner_e - cs173h_configuration->top_left_corner_e, 2.0f));
+
+        // Get the cos and sin for the Vs30 map rotation.
+        cs173h_cos_vs30_rotation_angle = cos(cs173h_vs30_map->rotation * DEG_TO_RAD);
+        cs173h_sin_vs30_rotation_angle = sin(cs173h_vs30_map->rotation * DEG_TO_RAD);
 
 	// Let everyone know that we are initialized and ready for business.
 	cs173h_is_initialized = 1;
@@ -193,6 +211,12 @@ int cs173h_query(cs173h_point_t *points, cs173h_properties_t *data, int numpoint
 			data[i].qs = -1;
 			continue;
 		} else {
+                    if ((points[i].depth < cs173h_configuration->depth_interval) && 
+                                                       (cs173h_configuration->gtl == 1)) {
+                           cs173h_get_vs30_based_gtl(&(points[i]), &(data[i]));
+                           data[i].rho=cs173h_calculate_density(data[i].vs);
+
+                      } else {
 			// Read all the surrounding point properties.
 			cs173h_read_properties(load_x_coord,     load_y_coord,     load_z_coord,     &(surrounding_points[0]));	// Orgin.
 			cs173h_read_properties(load_x_coord + 1, load_y_coord,     load_z_coord,     &(surrounding_points[1]));	// Orgin + 1x
@@ -204,6 +228,7 @@ int cs173h_query(cs173h_point_t *points, cs173h_properties_t *data, int numpoint
 			cs173h_read_properties(load_x_coord + 1, load_y_coord + 1, load_z_coord - 1, &(surrounding_points[7]));	// +x +y, forms bottom plane.
 
 			cs173h_trilinear_interpolation(x_percent, y_percent, z_percent, surrounding_points, &(data[i]));
+                   }
 		}
 
 		// Calculate Qp and Qs.

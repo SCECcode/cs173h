@@ -53,12 +53,14 @@ typedef struct cs173h_properties_t {
 	double qs;
 } cs173h_properties_t;
 
-/** The CVM-S5 configuration structure. */
+/** The CS173H configuration structure. */
 typedef struct cs173h_configuration_t {
 	/** The zone of UTM projection */
 	int utm_zone;
 	/** The model directory */
 	char model_dir[128];
+        /** GTL on or off (1 or 0) */
+        int gtl;
 	/** Number of x points */
 	int nx;
 	/** Number of y points */
@@ -90,6 +92,18 @@ typedef struct cs173h_configuration_t {
 	/** The data seek direction, bottom-up, or top-down */
 	char seek_direction[128];
 	/** Number of x points */
+        /** Brocher 2005 scaling polynomial coefficient 10^0 */
+        double p0;
+        /** Brocher 2005 scaling polynomial coefficient 10^1 */
+        double p1;
+        /** Brocher 2005 scaling polynomial coefficient 10^2 */
+        double p2;
+        /** Brocher 2005 scaling polynomial coefficient 10^3 */
+        double p3;
+        /** Brocher 2005 scaling polynomial coefficient 10^4 */
+        double p4;
+        /** Brocher 2005 scaling polynomial coefficient 10^5 */
+        double p5;
 } cs173h_configuration_t;
 
 /** The model structure which points to available portions of the model. */

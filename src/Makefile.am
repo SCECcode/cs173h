@@ -21,15 +21,21 @@ clean:
 	rm -rf $(TARGETS)
 	rm -rf cs173h.o utm_geo.o
 
-libcs173h.a: cs173h_static.o 
+libcs173h.a: cs173h_static.o cs173h_gtl_static.o
 	$(AR) rcs $@ $^
 
-libcs173h.so: cs173h.o 
+libcs173h.so: cs173h.o cs173h_gtl.o
 	$(CC) -shared $(AM_FCFLAGS) -o libcs173h.so $^ $(AM_LDFLAGS)
 
 cs173h.o: cs173h.c
 	$(CC) -fPIC -DDYNAMIC_LIBRARY -o $@ -c $^ $(AM_CFLAGS)
+
+cs173h_gtl.o: cs173h_gtl.c
+	$(CC) -fPIC -DDYNAMIC_LIBRARY -o $@ -c $^ $(AM_CFLAGS)
 	
 cs173h_static.o: cs173h.c
+	$(CC) -o $@ -c $^ $(AM_CFLAGS)
+
+cs173h_gtl_static.o: cs173h_gtl.c
 	$(CC) -o $@ -c $^ $(AM_CFLAGS)
 	
