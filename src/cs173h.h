@@ -183,3 +183,22 @@ void cs173h_bilinear_interpolation(double x_percent, double y_percent, cs173h_pr
 /** Trilinearly interpolates the properties. */
 void cs173h_trilinear_interpolation(double x_percent, double y_percent, double z_percent, cs173h_properties_t *eight_points,
 							 cs173h_properties_t *ret_properties);
+
+
+/** Configuration parameters. */
+extern cs173h_configuration_t *cs173h_configuration;
+/** Proj.4 latitude longitude, WGS84 projection holder. */
+extern projPJ cs173h_latlon;
+/** Proj.4 UTM projection holder. */
+extern projPJ cs173h_utm;
+
+/** The cosine of the rotation angle used to rotate the box and point around the bottom-left corner. */
+extern double cs173h_cos_rotation_angle;
+/** The sine of the rotation angle used to rotate the box and point around the bottom-left corner. */
+extern double cs173h_sin_rotation_angle;
+
+/** The height of this model's region, in meters. */
+extern double cs173h_total_height_m;
+/** The width of this model's region, in meters. */
+extern double cs173h_total_width_m;
+

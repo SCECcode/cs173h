@@ -52,20 +52,6 @@ typedef struct cs173h_vs30_mpayload_t {
         float vs30;
 } cs173h_vs30_mpayload_t;
 
-/** Location of the ucvm.e e-tree file. */
-char cs173h_vs30_etree_file[128];
-
-/** Holds the configuration parameters for the Vs30 map. */
-cs173h_vs30_map_config_t *cs173h_vs30_map;
-
-/** Proj.4 Vs30 map projection holder. */
-projPJ cs173h_aeqd;
-
-/** The cosine of the Vs30 map's rotation. */
-double cs173h_cos_vs30_rotation_angle = 0;
-/** The sine of the Vs30 map's rotation. */
-double cs173h_sin_vs30_rotation_angle = 0;
-
 // GTL related
 /** Retrieves the vs30 value for a given point. */
 int cs173h_get_vs30_based_gtl(cs173h_point_t *point, cs173h_properties_t *data);
@@ -73,3 +59,18 @@ int cs173h_get_vs30_based_gtl(cs173h_point_t *point, cs173h_properties_t *data);
 int cs173h_read_vs30_map(char *filename, cs173h_vs30_map_config_t *map);
 /** Gets the Vs30 value at a point */
 double cs173h_get_vs30_value(double longitude, double latitude, cs173h_vs30_map_config_t *map);
+
+
+extern char cs173h_vs30_etree_file[];
+
+/** Holds the configuration parameters for the Vs30 map. */
+extern cs173h_vs30_map_config_t *cs173h_vs30_map;
+
+/** Proj.4 Vs30 map projection holder. */
+extern projPJ cs173h_aeqd;
+
+/** The cosine of the Vs30 map's rotation. */
+extern double cs173h_cos_vs30_rotation_angle;
+/** The sine of the Vs30 map's rotation. */
+extern double cs173h_sin_vs30_rotation_angle;
+

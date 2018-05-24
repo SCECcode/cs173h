@@ -8,6 +8,21 @@
 #include "cs173h.h"
 #include "cs173h_gtl.h"
 
+/** Location of the ucvm.e e-tree file. */
+char cs173h_vs30_etree_file[128];
+
+/** Holds the configuration parameters for the Vs30 map. */
+cs173h_vs30_map_config_t *cs173h_vs30_map;
+
+/** Proj.4 Vs30 map projection holder. */
+projPJ cs173h_aeqd;
+
+/** The cosine of the Vs30 map's rotation. */
+double cs173h_cos_vs30_rotation_angle = 0;
+/** The sine of the Vs30 map's rotation. */
+double cs173h_sin_vs30_rotation_angle = 0;
+
+
 /**
  * Reads the format of the Vs30 data e-tree. This file location is typically specified
  * in the cs173h_configuration file of the model.
