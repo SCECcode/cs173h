@@ -247,7 +247,6 @@ int cs173h_query(cs173h_point_t *points, cs173h_properties_t *data, int numpoint
                                                        (cs173h_configuration->gtl == 1)) {
                            cs173h_get_vs30_based_gtl(&(points[i]), &(data[i]));
                            data[i].rho=cs173h_calculate_density(data[i].vs);
-                           fprintf(stderr,"HERE in gtl..\n");
 
                       } else {
 			// Read all the surrounding point properties.
