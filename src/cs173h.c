@@ -247,7 +247,7 @@ int cs173h_query(cs173h_point_t *points, cs173h_properties_t *data, int numpoint
                                                        (cs173h_configuration->gtl == 1)) {
                            cs173h_get_vs30_based_gtl(&(points[i]), &(data[i]));
                            data[i].rho=cs173h_calculate_density(data[i].vs);
-                           fprintf(stdout,"HERE in gtl..\n");
+                           fprintf(stderr,"HERE in gtl..\n");
 
                       } else {
 			// Read all the surrounding point properties.
@@ -689,6 +689,23 @@ int cs173h_try_reading_model(cs173h_model_t *model) {
 	else
 		return 2;
 }
+
+/**
+ * Calculates the density based off of Vs. Based on Nafe-Drake scaling relationship.
+ * 
+ * @param vs The Vs value off which to scale.
+ * @return Density, in g/m^3.
+ **/
+double cs173h_calculate_density(double vs) {
+        double retVal;
+        vs = vs / 1000;
+        retVal = cs173h_configuration->p0 + cs173h_configuration->p1 * vs + cs173h_configuration->p2 * pow(vs, 2) +
+                         cs173h_configuration->p3 * pow(vs, 3) + cs173h_configuration->p4 * pow(vs, 4) + cs173h_configuration->p5 * pow(vs, 5);
+        retVal = retVal * 1000;
+        return retVal;
+}
+
+
 
 // The following functions are for dynamic library mode. If we are compiling
 // a static library, these functions must be disabled to avoid conflicts.
