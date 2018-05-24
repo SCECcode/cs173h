@@ -5,6 +5,7 @@
  *
  */
 
+#include "cs173h.h"
 #include "cs173h_gtl.h"
 
 /**

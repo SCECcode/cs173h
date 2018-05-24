@@ -19,7 +19,7 @@ install:
 
 clean:
 	rm -rf $(TARGETS)
-	rm -rf cs173h.o utm_geo.o
+	rm -rf *.o
 
 libcs173h.a: cs173h_static.o cs173h_gtl_static.o
 	$(AR) rcs $@ $^

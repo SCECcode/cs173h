@@ -130,36 +130,6 @@ typedef struct cs173h_model_t {
 	int qs_status;
 } cs173h_model_t;
 
-// Constants
-/** The version of the model. */
-const char *cs173h_version_string = "CS173";
-
-// Variables
-/** Set to 1 when the model is ready for query. */
-int cs173h_is_initialized = 0;
-
-/** Location of En-Jui's latest iteration files. */
-char cs173h_iteration_directory[128];
-
-/** Configuration parameters. */
-cs173h_configuration_t *cs173h_configuration;
-/** Holds pointers to the velocity model data OR indicates it can be read from file. */
-cs173h_model_t *cs173h_velocity_model;
-
-/** Proj.4 latitude longitude, WGS84 projection holder. */
-projPJ cs173h_latlon;
-/** Proj.4 UTM projection holder. */
-projPJ cs173h_utm;
-
-/** The cosine of the rotation angle used to rotate the box and point around the bottom-left corner. */
-double cs173h_cos_rotation_angle = 0;
-/** The sine of the rotation angle used to rotate the box and point around the bottom-left corner. */
-double cs173h_sin_rotation_angle = 0;
-
-/** The height of this model's region, in meters. */
-double cs173h_total_height_m = 0;
-/** The width of this model's region, in meters. */
-double cs173h_total_width_m = 0;
 
 // UCVM API Required Functions
 

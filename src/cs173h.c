@@ -12,8 +12,40 @@
 
 #include "limits.h"
 #include "cs173h.h"
+#include "cs173h_gtl.h"
 #include "proj_api.h"
 
+
+// Constants
+/** The version of the model. */
+const char *cs173h_version_string = "CS173";
+
+// Variables
+/** Set to 1 when the model is ready for query. */
+int cs173h_is_initialized = 0;
+
+/** Location of En-Jui's latest iteration files. */
+char cs173h_iteration_directory[128];
+
+/** Configuration parameters. */
+cs173h_configuration_t *cs173h_configuration;
+/** Holds pointers to the velocity model data OR indicates it can be read from file. */
+cs173h_model_t *cs173h_velocity_model;
+
+/** Proj.4 latitude longitude, WGS84 projection holder. */
+projPJ cs173h_latlon;
+/** Proj.4 UTM projection holder. */
+projPJ cs173h_utm;
+
+/** The cosine of the rotation angle used to rotate the box and point around the bottom-left corner. */
+double cs173h_cos_rotation_angle = 0;
+/** The sine of the rotation angle used to rotate the box and point around the bottom-left corner. */
+double cs173h_sin_rotation_angle = 0;
+
+/** The height of this model's region, in meters. */
+double cs173h_total_height_m = 0;
+/** The width of this model's region, in meters. */
+double cs173h_total_width_m = 0;
 /**
  * Initializes the CS173H plugin model within the UCVM framework. In order to initialize
  * the model, we must provide the UCVM install path and optionally a place in memory
@@ -57,7 +89,7 @@ int cs173h_init(const char *dir, const char *label) {
 		return FAIL;
 	}
 
-        if (cs173h_read_vs30_map(cs173h_vs30_etree_file, cca_vs30_map) != SUCCESS) {
+        if (cs173h_read_vs30_map(cs173h_vs30_etree_file, cs173h_vs30_map) != SUCCESS) {
                 cs173h_print_error("Could not read the Vs30 map data from UCVM.");
                 return FAIL;
         }
