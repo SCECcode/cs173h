@@ -247,6 +247,7 @@ int cs173h_query(cs173h_point_t *points, cs173h_properties_t *data, int numpoint
                                                        (cs173h_configuration->gtl == 1)) {
                            cs173h_get_vs30_based_gtl(&(points[i]), &(data[i]));
                            data[i].rho=cs173h_calculate_density(data[i].vs);
+                           fprintf(stdout,"HERE in gtl..\n");
 
                       } else {
 			// Read all the surrounding point properties.
@@ -499,6 +500,17 @@ int cs173h_read_configuration(char *file, cs173h_configuration_t *config) {
 			if (strcmp(key, "depth_interval") == 0)		config->depth_interval = atof(value);
 			if (strcmp(key, "seek_axis") == 0)		sprintf(config->seek_axis, "%s", value);
 			if (strcmp(key, "seek_direction") == 0)		sprintf(config->seek_direction, "%s", value);
+			if (strcmp(key, "p0") == 0)                                             config->p0 = atof(value);
+                        if (strcmp(key, "p1") == 0)                                             config->p1 = atof(value);
+                        if (strcmp(key, "p2") == 0)                                             config->p2 = atof(value);
+                        if (strcmp(key, "p3") == 0)                                             config->p3 = atof(value);
+                        if (strcmp(key, "p4") == 0)                                             config->p4 = atof(value);
+                        if (strcmp(key, "p5") == 0)                                             config->p5 = atof(value);
+                        if (strcmp(key, "gtl") == 0) {
+                                if (strcmp(value, "on") == 0) config->gtl = 1;
+                                else config->gtl = 0;
+                        }
+
 		}
 	}
 
