@@ -246,7 +246,11 @@ int cs173h_query(cs173h_point_t *points, cs173h_properties_t *data, int numpoint
                     if ((points[i].depth < cs173h_configuration->depth_interval) && 
                                                        (cs173h_configuration->gtl == 1)) {
                            cs173h_get_vs30_based_gtl(&(points[i]), &(data[i]));
-                           data[i].rho=cs173h_calculate_density(data[i].vs);
+                           if(strcmp(cs173h_configuration->density,"vs") == 0) {
+                               data[i].rho=cs173h_calculate_density(data[i].vs);
+                               } else {
+                                  data[i].rho=cs173h_nafe_drake_rho(data[i].vp);
+                           }
 
                       } else {
 			// Read all the surrounding point properties.
@@ -505,6 +509,7 @@ int cs173h_read_configuration(char *file, cs173h_configuration_t *config) {
                         if (strcmp(key, "p3") == 0)                                             config->p3 = atof(value);
                         if (strcmp(key, "p4") == 0)                                             config->p4 = atof(value);
                         if (strcmp(key, "p5") == 0)                                             config->p5 = atof(value);
+			if (strcmp(key, "density") == 0)				sprintf(config->density, "%s", value);
                         if (strcmp(key, "gtl") == 0) {
                                 if (strcmp(value, "on") == 0) config->gtl = 1;
                                 else config->gtl = 0;
@@ -703,7 +708,23 @@ double cs173h_calculate_density(double vs) {
         retVal = retVal * 1000;
         return retVal;
 }
-
+/**
+ * Calculates the density based off of Vp. Derived from Vp via Nafe-Drake curve, Brocher (2005) eqn 1. 
+ * @param vs The Vs value off which to scale.
+ * @return Density, in g/m^3.
+ **/
+double cs173h_nafe_drake_rho(double vp) {
+{
+  double rho;
+  /* Convert m to km */
+  vp = vp * 0.001;
+  rho = vp * (1.6612 - vp * (0.4721 - vp * (0.0671 - vp * (0.0043 - vp * 0.000106))));
+  if (rho < 1.0) {
+    rho = 1.0;
+  }
+  rho = rho * 1000.0;
+  return(rho);
+}
 
 
 // The following functions are for dynamic library mode. If we are compiling

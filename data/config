@@ -24,6 +24,7 @@ p2 = -0.51231936640441489
 p1 = 1.2550758337054457
 p0 = 1.2948318548300342
 
+density = vs
 
 # Corners, in UTM projection.
 bottom_left_corner_e = 548969.079292
