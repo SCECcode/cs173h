@@ -91,7 +91,8 @@ typedef struct cs173h_configuration_t {
 	char seek_axis[128];
 	/** The data seek direction, bottom-up, or top-down */
 	char seek_direction[128];
-	/** Number of x points */
+	/**  using vs or vp*/
+	char density[128];
         /** Brocher 2005 scaling polynomial coefficient 10^0 */
         double p0;
         /** Brocher 2005 scaling polynomial coefficient 10^1 */
@@ -174,6 +175,8 @@ void cs173h_read_properties(int x, int y, int z, cs173h_properties_t *data);
 int cs173h_try_reading_model(cs173h_model_t *model);
 /** Calculates density from Vs. */
 double cs173h_calculate_density(double vs);
+/** Calculates density from Vp. */
+double cs173h_nafe_drake_rho(double vp);
 
 // Interpolation Functions
 /** Linearly interpolates two cs173h_properties_t structures */

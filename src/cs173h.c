@@ -714,7 +714,6 @@ double cs173h_calculate_density(double vs) {
  * @return Density, in g/m^3.
  **/
 double cs173h_nafe_drake_rho(double vp) {
-{
   double rho;
   /* Convert m to km */
   vp = vp * 0.001;
