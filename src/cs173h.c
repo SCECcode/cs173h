@@ -141,7 +141,7 @@ int cs173h_init(const char *dir, const char *label) {
 
 #define PROJ_GEO_IPJ "+proj=latlong +datum=WGS84"
 #define PROJ_GEO_OPJ "+proj=utm +zone=11 +ellps=WGS84"
-int to_utm(double *lon, double *lat) {
+static int to_utm(double *lon, double *lat) {
 	projPJ ipj= pj_init_plus(PROJ_GEO_IPJ);
 	projPJ opj = pj_init_plus(PROJ_GEO_OPJ);
 	int p = pj_transform(ipj, opj, 1, 1, lon, lat, NULL );
@@ -551,7 +551,7 @@ void cs173h_print_error(char *err) {
  * allowable by a INT variable)
  *
  */
-int too_big() {
+static int too_big() {
         long max_size= (long) (cs173h_configuration->nx) * cs173h_configuration->ny * cs173h_configuration->nz;
         long delta= max_size - INT_MAX;
 
